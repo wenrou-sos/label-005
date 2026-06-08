@@ -59,3 +59,26 @@ export function getTicketMeta() {
     method: 'get'
   })
 }
+
+export interface StatusStat {
+  status: string
+  count: number
+}
+
+export interface DeviceTypeStat {
+  deviceType: string
+  count: number
+}
+
+export interface StatisticsData {
+  total: number
+  byStatus: StatusStat[]
+  byDeviceType: DeviceTypeStat[]
+}
+
+export function getTicketStatistics() {
+  return request<StatisticsData>({
+    url: '/tickets/statistics/summary',
+    method: 'get'
+  })
+}

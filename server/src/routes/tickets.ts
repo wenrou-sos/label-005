@@ -8,7 +8,8 @@ import {
   deleteTicket,
   getDistinctFloors,
   getAllUsers,
-  getAllDevices
+  getAllDevices,
+  getStatistics
 } from '../services/ticketService'
 import type { TicketFilter, CreateTicketRequest, UpdateTicketRequest } from '../types'
 
@@ -42,6 +43,15 @@ router.get('/meta', (_req: Request, res: Response) => {
         devices: getAllDevices()
       }
     })
+  } catch (err) {
+    res.status(500).json({ success: false, message: (err as Error).message })
+  }
+})
+
+router.get('/statistics/summary', (_req: Request, res: Response) => {
+  try {
+    const data = getStatistics()
+    res.json({ success: true, data })
   } catch (err) {
     res.status(500).json({ success: false, message: (err as Error).message })
   }

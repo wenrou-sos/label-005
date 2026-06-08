@@ -227,3 +227,57 @@ export function getAllDevices(): Device[] {
   const rows = db.prepare('SELECT * FROM devices ORDER BY floor, device_code').all() as Array<Record<string, unknown>>
   return rows.map(transformDevice)
 }
+
+export interface StatusStat {
+  status: string
+  count: number
+}
+
+export interface DeviceTypeStat {
+  deviceType: string
+  count: number
+}
+
+export interface StatisticsData {
+  total: number
+  byStatus: StatusStat[]
+  byDeviceType: DeviceTypeStat[]
+}
+
+export function getStatistics(): StatisticsData {
+  const db = getDatabase()
+
+  const totalRow = db.prepare('SELECT COUNT(*) as total FROM repair_tickets').get() as { total: number }
+  const total = Number(totalRow.total)
+
+  const statusRows = db
+    .prepare(`
+      SELECT status, COUNT(*) as count
+      FROM repair_tickets
+      GROUP BY status
+      ORDER BY status
+    `)
+    .all() as Array<{ status: string; count: number }>
+
+  const allStatuses = ['pending', 'processing', 'completed', 'closed']
+  const byStatus: StatusStat[] = allStatuses.map((s) => {
+    const found = statusRows.find((r) => r.status === s)
+    return { status: s, count: found ? Number(found.count) : 0 }
+  })
+
+  const deviceTypeRows = db
+    .prepare(`
+      SELECT device_type, COUNT(*) as count
+      FROM repair_tickets
+      GROUP BY device_type
+      ORDER BY count DESC
+    `)
+    .all() as Array<{ device_type: string; count: number }>
+
+  const byDeviceType: DeviceTypeStat[] = deviceTypeRows.map((r) => ({
+    deviceType: r.device_type,
+    count: Number(r.count)
+  }))
+
+  return { total, byStatus, byDeviceType }
+}

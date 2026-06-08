@@ -1,7 +1,14 @@
 <template>
   <div class="page-container">
     <div class="page-header">
-      <a-page-header title="报修工单列表" sub-title="管理和查看所有报修工单" />
+      <a-page-header title="报修工单列表" sub-title="管理和查看所有报修工单">
+        <template #extra>
+          <a-button @click="goToStatistics">
+            <BarChartOutlined />
+            查看统计
+          </a-button>
+        </template>
+      </a-page-header>
     </div>
 
     <div class="page-content">
@@ -139,7 +146,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
 import type { TablePaginationConfig } from 'ant-design-vue'
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons-vue'
+import { SearchOutlined, ReloadOutlined, BarChartOutlined } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
 import { getTicketList, getTicketMeta, type MetaData } from '@/api/tickets'
 import type { RepairTicket, TicketFilter } from '@/types'
@@ -313,6 +320,10 @@ const handleTableChange = (p: TablePaginationConfig) => {
 
 const goToDetail = (id: number) => {
   router.push(`/tickets/${id}`)
+}
+
+const goToStatistics = () => {
+  router.push('/statistics')
 }
 
 onMounted(() => {

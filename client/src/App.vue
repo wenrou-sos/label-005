@@ -23,6 +23,10 @@
           <UnorderedListOutlined />
           报修工单
         </a-menu-item>
+        <a-menu-item key="Statistics" @click="$router.push('/statistics')">
+          <BarChartOutlined />
+          维修统计
+        </a-menu-item>
       </a-menu>
     </a-layout-header>
     <a-layout-content>
@@ -36,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { BankOutlined, UnorderedListOutlined } from '@ant-design/icons-vue'
+import { BankOutlined, UnorderedListOutlined, BarChartOutlined } from '@ant-design/icons-vue'
 </script>
 
 <style scoped>
